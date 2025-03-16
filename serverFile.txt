@@ -1,0 +1,86 @@
+1). This is the backend server file created in vs code using 'ExpressJS' & 'Mongoose'
+2). Download nodeJs and MongoDB, open vs code, and run below commands in vs code terminal
+- npm i express
+- npm i nodemon
+- npm i mongoose
+3). create a server.js file.
+4). run server file.
+- npx nodemon ./server.js
+
+
+server.js:
+__________________________________________
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
+const port = 3000;
+
+// Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/notesApp');
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Define Mongoose Schema
+const noteSchema = new mongoose.Schema({
+    notesTitle: { type: String, required: true },
+    noteDescription: { type: String, required: true },
+    notesPriority: { type: String, required: true },
+    date: { type: Date, default: Date.now }
+});
+
+// Create a Mongoose Model
+const Note = mongoose.model('Notes', noteSchema);
+
+// Route to create a new note
+app.post('/save-notes', async (req, res) => {
+    try {
+        const { title, desc, priority } = req.body;
+        const newNote = new Note({ title, desc, priority });
+
+        await newNote.save();
+        res.status(201).send(newNote);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+// Route to get all notes
+app.get('/notes', async (req, res) => {
+    try {
+        const notes = await Note.find();
+        res.status(200).send(notes);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
+// Root route
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
+app.get('/save-dummy-note', async (req, res) => {
+    try {
+        // Create a dummy note
+        const dummyNote = new Note({
+            title: "Dummy Note",
+            desc: "This is an auto-generated dummy note for testing.",
+            priority: "Low"
+        });
+
+        // Save it to the database
+        await dummyNote.save();
+
+        res.json({ message: "✅ Dummy note saved successfully", note: dummyNote });
+    } catch (error) {
+        res.status(500).json({ message: "❌ Error saving dummy note", error });
+    }
+});
+
+
+// Start the server
+app.listen(port, () => {
+    console.log(`🚀 Server running at http://localhost:${port}`);
+});
