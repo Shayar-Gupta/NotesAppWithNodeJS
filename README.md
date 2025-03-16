@@ -17,8 +17,7 @@ Follow these steps to set up the project:
 ### 1. Clone the Repository (if applicable)  
 
 ```sh  
-git clone <repository-url>  
-cd <project-folder>
+git clone https://github.com/Shayar-Gupta/NotesAppWithNodeJS.git
 ```
 
 ### 2. Run the following commands in the VS Code terminal:
