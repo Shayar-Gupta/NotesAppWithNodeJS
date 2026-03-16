@@ -7,6 +7,8 @@
 4). run server file.
 - npx nodemon ./server.js
 
+Change the baseURL with your laptop url ipconfig
+
 
 server.js:
 __________________________________________
@@ -36,8 +38,8 @@ const Note = mongoose.model('Notes', noteSchema);
 // Route to create a new note
 app.post('/save-notes', async (req, res) => {
     try {
-        const { title, desc, priority } = req.body;
-        const newNote = new Note({ title, desc, priority });
+        const { notesTitle, noteDescription, notesPriority } = req.body;
+        const newNote = new Note({ notesTitle, noteDescription, notesPriority });
 
         await newNote.save();
         res.status(201).send(newNote);
@@ -65,9 +67,9 @@ app.get('/save-dummy-note', async (req, res) => {
     try {
         // Create a dummy note
         const dummyNote = new Note({
-            title: "Dummy Note",
-            desc: "This is an auto-generated dummy note for testing.",
-            priority: "Low"
+            notesTitle: "Dummy Note",
+            noteDescription: "This is an auto-generated dummy note for testing.",
+            notesPriority: "Low"
         });
 
         // Save it to the database
@@ -81,6 +83,6 @@ app.get('/save-dummy-note', async (req, res) => {
 
 
 // Start the server
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
