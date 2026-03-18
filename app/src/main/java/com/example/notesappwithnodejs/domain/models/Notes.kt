@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter
 
 
 data class Notes(
+    val _id: String? = null,
     val notesTitle: String?,
     val noteDescription: String?,
     val notesPriority: String?,
@@ -38,17 +39,18 @@ data class Notes(
 )
 
 @Composable
-fun NotesCard(notes: Notes) {
+fun NotesCard(notes: Notes, modifier: Modifier = Modifier ) {
+
     val chipColors = remember(notes.notesPriority) {
         when (notes.notesPriority) {
-            "Medium" -> Color.Yellow
-            "High" -> Color.Red
-            else -> Color.Green
+            "High"   -> Color(0xFFE53935)
+            "Medium" -> Color(0xFFFFA726)
+            else     -> Color(0xFF43A047)
         }
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.dark_blue))
     ) {
@@ -68,16 +70,18 @@ fun NotesCard(notes: Notes) {
                 }
 
                 Text(
-                    text = notes.notesTitle ?: "Totle",
+                    text = notes.notesTitle ?: "Title",
                     fontWeight = FontWeight.Bold,
                     overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
                     fontSize = 22.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = notes.noteDescription ?: "Desc",
+                    text = notes.noteDescription ?: "Description",
                     fontWeight = FontWeight.Normal,
                     overflow = TextOverflow.Ellipsis,
+                    maxLines = 3,
                     fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -98,15 +102,16 @@ fun NotesCard(notes: Notes) {
 }
 
 fun formateTimestamp(timestamps: String): String {
-    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
-    val zonedDateTime = ZonedDateTime.parse(timestamps, formatter)
-
-    val zoneId = ZoneId.of("Asia/Kolkata")
-    val isDateTime = zonedDateTime.withZoneSameInstant(zoneId)
-
-    val day = isDateTime.dayOfMonth.toString().padStart(2, '0')
-    val month = isDateTime.monthValue.toString().padStart(2, '0')
-    val year = isDateTime.year.toString()
-
-    return "$day-$month-$year"
+    return try {
+        val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+        val zonedDateTime = ZonedDateTime.parse(timestamps, formatter)
+        val zoneId = ZoneId.of("Asia/Kolkata")
+        val isDateTime = zonedDateTime.withZoneSameInstant(zoneId)
+        val day = isDateTime.dayOfMonth.toString().padStart(2, '0')
+        val month = isDateTime.monthValue.toString().padStart(2, '0')
+        val year = isDateTime.year.toString()
+        "$day-$month-$year"
+    } catch (e: Exception) {
+        "Invalid date"
+    }
 }

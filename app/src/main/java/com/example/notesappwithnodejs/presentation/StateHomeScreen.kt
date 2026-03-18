@@ -5,5 +5,8 @@ import com.example.notesappwithnodejs.domain.models.Notes
 data class StateHomeScreen(
     val gettingNotes : Boolean = false,
     val fetchedNotes : List<Notes> ?= emptyList(),
-    val error : String = ""
+    val error : String = "",
+    val deletingNoteId: String? = null,
+    val showDeleteConfirmFor: Notes? = null,
+    val deleteSuccess: Boolean = false,
 )
